@@ -1,19 +1,19 @@
 // ==UserScript==
 // @name         Extras UNIT3D CBR
-// @namespace    http://tampermonkey.net/
-// @version      1.0
+// @namespace    https://github.com/harpiacbr/Extras-CBR
+// @version      1.2
 // @description  Modificações externas para o tracker capybarabr
-// @match        capybarabr.com
-// @grant        none
+// @match        https://capybarabr.com/*
+// @match        https://*/torrents?view=list*
 // @grant        GM_addStyle
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=unit3d.dev
 // @license      GPL-3.0-or-later
-
 // ==/UserScript==
 
 (function() {
     'use strict';
 
+    // UNIT3D Chatbox QoL Features
     const chatboxID = '#chatbox__messages-create';
     const EMOJI_TRIGGER_HTML = `<div style="cursor: pointer; font-size: 24px;">😊</div>`;
     const EMOJI_PANEL_HTML = `<div style="position: absolute; display: flex; background: transparent; border: none;
@@ -110,7 +110,7 @@
             chatbox.setSelectionRange(startPos, endPos);
             chatbox.focus();
         });
-}
+    }
 
     function insertBBCode(chatbox, bbCode) {
         const textSelected = chatbox.value.substring(chatbox.selectionStart, chatbox.selectionEnd);
@@ -129,83 +129,84 @@
         chatbox.focus();
     }
 
-    function checkAndSetup() {
+    function checkAndSetupChat() {
         const chatbox = document.querySelector(chatboxID);
         if (chatbox) {
             setupChatFeatures(chatbox);
         } else {
             console.error('Chatbox not found: Ensure the chatbox ID is correct.');
-            setTimeout(checkAndSetup, 100); // Check again in 100ms
+            setTimeout(checkAndSetupChat, 100); // Check again in 100ms
         }
     }
 
-    checkAndSetup(); // Start the setup process
-})();
+    checkAndSetupChat(); // Start the setup process for UNIT3D Chatbox QoL Features
 
-/*jshint esversion: 6 */
-let enlargedPoster = document.createElement('div');
-enlargedPoster.id = 'enlargedPoster';
-enlargedPoster.className = 'enlarged-poster';
-enlargedPoster.style.display = 'none';
-document.body.appendChild(enlargedPoster);
+    // Poster Enlarger
+    const enlargedPoster = document.createElement('div');
+    enlargedPoster.id = 'enlargedPoster';
+    enlargedPoster.className = 'enlarged-poster';
+    enlargedPoster.style.display = 'none';
+    document.body.appendChild(enlargedPoster);
 
-function addListener() {
-    let poster = document.querySelectorAll('.torrent-search--list__poster-img');
-    if (poster == null) {
-        setTimeout(function () { addListener() }, 100)
-    }
-    if (poster) {
-        poster.forEach(p => {
-            p.addEventListener('mousemove', function (event) {
-                showEnlargedPoster(event, this, this.src);
+    function addListener() {
+        let poster = document.querySelectorAll('.torrent-search--list__poster-img');
+        if (poster == null) {
+            setTimeout(function () { addListener() }, 100)
+        }
+        if (poster) {
+            poster.forEach(p => {
+                p.addEventListener('mousemove', function (event) {
+                    showEnlargedPoster(event, this, this.src);
+                });
             });
+        }
+    }
+
+    addListener();
+
+    function showEnlargedPoster(event, element, src) {
+        const enlargedPoster = document.getElementById('enlargedPoster');
+        if (src.includes("w92")) {
+            src = src.replace("w92", "w500")
+        }
+        enlargedPoster.style.backgroundImage = `url('${src}')`;
+        const x = event.clientX;
+        const y = event.clientY;
+
+        const scrollX = window.scrollX || window.pageXOffset;
+        const scrollY = window.scrollY || window.pageYOffset;
+
+        const viewportX = x + scrollX;
+        const viewportY = y + scrollY;
+        const offsetX = 10;
+        let offsetY = -460;
+        let space = viewportY - scrollY
+        if (space <= 450 && space >= 200) {
+            offsetY = -200;
+        }else if(space <= 200){
+            offsetY = 10
+        }
+        enlargedPoster.style.left = viewportX + offsetX + 'px'; // 10px to the right of the cursor
+        enlargedPoster.style.top = viewportY + offsetY + 'px'; // 10px above the cursor
+
+        enlargedPoster.style.display = 'block';
+
+        element.addEventListener('mouseleave', function () {
+            enlargedPoster.style.display = 'none';
         });
     }
-}
 
-addListener();
-function showEnlargedPoster(event, element, src) {
-    const enlargedPoster = document.getElementById('enlargedPoster');
-    if (src.includes("w92")) {
-        src = src.replace("w92", "w500")
+    const posterStyler = `
+        .enlarged-poster {
+        position: absolute;
+        width: 300px;
+        height: 450px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        z-index: 9999;
     }
-    enlargedPoster.style.backgroundImage = `url('${src}')`;
-    const x = event.clientX;
-    const y = event.clientY;
+    `;
 
-    const scrollX = window.scrollX || window.pageXOffset;
-    const scrollY = window.scrollY || window.pageYOffset;
-
-    const viewportX = x + scrollX;
-    const viewportY = y + scrollY;
-    const offsetX = 10;
-    let offsetY = -460;
-    let space = viewportY - scrollY
-    if (space <= 450 && space >= 200) {
-        offsetY = -200;
-    }else if(space <= 200){
-        offsetY = 10
-    }
-    enlargedPoster.style.left = viewportX + offsetX + 'px'; // 10px to the right of the cursor
-    enlargedPoster.style.top = viewportY + offsetY + 'px'; // 10px above the cursor
-
-    enlargedPoster.style.display = 'block';
-
-    element.addEventListener('mouseleave', function () {
-        enlargedPoster.style.display = 'none';
-    });
-}
-
-const posterStyler = `
-    .enlarged-poster {
-    position: absolute;
-    width: 300px;
-    height: 450px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-}
-`;
-
-GM_addStyle(posterStyler)
+    GM_addStyle(posterStyler);
+})();
