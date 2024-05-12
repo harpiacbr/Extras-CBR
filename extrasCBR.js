@@ -7,6 +7,7 @@
 // @grant        none
 // @grant        GM_addStyle
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=unit3d.dev
+// @license      GPL-3.0-or-later
 
 // ==/UserScript==
 
