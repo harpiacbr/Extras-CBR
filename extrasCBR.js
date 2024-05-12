@@ -5,6 +5,9 @@
 // @description  Modificações externas para o tracker capybarabr
 // @match        capybarabr.com
 // @grant        none
+// @grant        GM_addStyle
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=unit3d.dev
+
 // ==/UserScript==
 
 (function() {
@@ -137,3 +140,71 @@
 
     checkAndSetup(); // Start the setup process
 })();
+
+/*jshint esversion: 6 */
+let enlargedPoster = document.createElement('div');
+enlargedPoster.id = 'enlargedPoster';
+enlargedPoster.className = 'enlarged-poster';
+enlargedPoster.style.display = 'none';
+document.body.appendChild(enlargedPoster);
+
+function addListener() {
+    let poster = document.querySelectorAll('.torrent-search--list__poster-img');
+    if (poster == null) {
+        setTimeout(function () { addListener() }, 100)
+    }
+    if (poster) {
+        poster.forEach(p => {
+            p.addEventListener('mousemove', function (event) {
+                showEnlargedPoster(event, this, this.src);
+            });
+        });
+    }
+}
+
+addListener();
+function showEnlargedPoster(event, element, src) {
+    const enlargedPoster = document.getElementById('enlargedPoster');
+    if (src.includes("w92")) {
+        src = src.replace("w92", "w500")
+    }
+    enlargedPoster.style.backgroundImage = `url('${src}')`;
+    const x = event.clientX;
+    const y = event.clientY;
+
+    const scrollX = window.scrollX || window.pageXOffset;
+    const scrollY = window.scrollY || window.pageYOffset;
+
+    const viewportX = x + scrollX;
+    const viewportY = y + scrollY;
+    const offsetX = 10;
+    let offsetY = -460;
+    let space = viewportY - scrollY
+    if (space <= 450 && space >= 200) {
+        offsetY = -200;
+    }else if(space <= 200){
+        offsetY = 10
+    }
+    enlargedPoster.style.left = viewportX + offsetX + 'px'; // 10px to the right of the cursor
+    enlargedPoster.style.top = viewportY + offsetY + 'px'; // 10px above the cursor
+
+    enlargedPoster.style.display = 'block';
+
+    element.addEventListener('mouseleave', function () {
+        enlargedPoster.style.display = 'none';
+    });
+}
+
+const posterStyler = `
+    .enlarged-poster {
+    position: absolute;
+    width: 300px;
+    height: 450px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+`;
+
+GM_addStyle(posterStyler)
