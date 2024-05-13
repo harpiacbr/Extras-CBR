@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Extras UNIT3D CBR
 // @namespace    https://github.com/harpiacbr/Extras-CBR
-// @version      1.2
+// @version      1.3
 // @description  Modificações externas para o tracker capybarabr
 // @match        https://capybarabr.com/*
 // @match        https://*/torrents?view=list*
