@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Extras UNIT3D CBR
 // @namespace    https://github.com/harpiacbr/Extras-CBR
-// @version      1.3
+// @version      1.4
 // @description  Modificações externas para o tracker capybarabr
 // @match        https://capybarabr.com/*
 // @match        https://*/torrents?view=list*
 // @grant        GM_addStyle
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=unit3d.dev
+// @icon         https://capybarabr.com/favicon.ico
 // @license      GPL-3.0-or-later
 // ==/UserScript==
 
@@ -216,4 +216,45 @@
     `;
 
     GM_addStyle(posterStyler);
+
+    //Módulo torrents semeando em destaque. By BruX4o
+
+        // Função para verificar se o elemento está semeando e destacá-lo em verde
+    function destacarElementoSemeando() {
+        // Seleciona todos os TRs com a classe "torrent-search--list__row"
+        var torrents = document.querySelectorAll('tr.torrent-search--list__row');
+        // Loop através de cada TR
+        torrents.forEach(function(torrent) {
+            // Verifica se o TD dentro deste TR possui a classe "torrent-search--list__overview"
+            var overviewTD = torrent.querySelector('td.torrent-search--list__overview');
+            if (overviewTD) {
+                // Verifica se o trecho de código está presente neste TD
+                var arrowIcon = overviewTD.querySelector('i.fas.fa-arrow-circle-up.text-success.torrent-icons[title="Atualmente Seeding"]');
+                if (arrowIcon) {
+                    // Se estiver semeando, destaca o texto do link em verde
+                    var nameLink = overviewTD.querySelector('a.torrent-search--list__name');
+                    if (nameLink) {
+                        nameLink.style.color = 'green';
+                    }
+                }
+            }
+        });
+    }
+
+    // Chama a função ao carregar a página
+    destacarElementoSemeando();
+
+    // Observa alterações na página e chama a função quando necessário
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' || mutation.type === 'subtree') {
+                destacarElementoSemeando();
+            }
+        });
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 })();
