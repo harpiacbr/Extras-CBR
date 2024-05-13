@@ -24,7 +24,14 @@
                               <span style="cursor: pointer;">😍</span> <span style="cursor: pointer;">😝</span>
                               <span style="cursor: pointer;">😴</span> <span style="cursor: pointer;">🤮</span>
                               <span style="cursor: pointer;">🤦‍♂️</span> <span style="cursor: pointer;">❤️</span>
-                              <span style="cursor: pointer;">🖤</span></div>`;
+                              <span style="cursor: pointer;">🖤</span> <span style="cursor: pointer;">🖕</span>
+                              <span style="cursor: pointer;">👍</span> <span style="cursor: pointer;">👎</span>
+                              <span style="cursor: pointer;">🤝</span> <span style="cursor: pointer;">✔️</span>
+                              <span style="cursor: pointer;">❌</span> <span style="cursor: pointer;">⚠️</span>
+                              <span style="cursor: pointer;">🇧🇷</span> <span style="cursor: pointer;">🆗</span>
+                              <span style="cursor: pointer;">⛔️</span> <span style="cursor: pointer;">🙏</span>
+                              </div>`;
+
     const BBCODES_PANEL_HTML = `<div id="bbCodesPanel" style="position: absolute; display: flex; background: transparent; border: none;
                                 padding: 5px; z-index: 9998; left: 35px; top: 0px; align-items: center;">
                                 <span style="cursor: pointer; margin-right: 10px;" data-bbcode="[b][/b]">[B]</span>
