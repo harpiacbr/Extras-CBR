@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Extras UNIT3D CBR
 // @namespace    https://github.com/harpiacbr/Extras-CBR
-// @version      1.4
+// @version      1.5
 // @description  Modificações externas para o tracker capybarabr
 // @match        https://capybarabr.com/*
 // @match        https://*/torrents?view=list*
@@ -9,11 +9,68 @@
 // @icon         https://capybarabr.com/favicon.ico
 // @license      GPL-3.0-or-later
 // ==/UserScript==
-
+// UNIT3D Chatbox QoL Features
 (function() {
     'use strict';
-
-    // UNIT3D Chatbox QoL Features
+    const chatMessagesClassName = '.chatroom__messages';
+ 
+    function setupReplyFeatures(chatMessages) {
+        const newMessageTextArea = document.querySelector("#chatbox__messages-create");
+ 
+        function quoteMessage(username, message) {
+            newMessageTextArea.value = `[color=#999999]Respondendo: [b]${username}[/b] - [i]${message}[/i][/color]\n`;
+        }
+ 
+        // Function to add reply icon to a message
+        function addReplyIconToMessage(message) {
+            const content = message.querySelector(".chatbox-message__content").innerText;
+            const username = message.querySelector(".chatbox-message__address.user-tag span").innerText;
+            const header = message.querySelector(".chatbox-message__header");
+ 
+            const replyIcon = document.createElement("i");
+            replyIcon.classList.add("fa", "solid", "fa-reply");
+ 
+            replyIcon.addEventListener("click", () => quoteMessage(username, content));
+ 
+            header.appendChild(replyIcon);
+        }
+ 
+        // Iterate over existing messages to add reply icons
+        document.querySelectorAll(".chatbox-message").forEach(addReplyIconToMessage);
+ 
+        // MutationObserver to monitor changes in the chatroom messages container
+        const observer = new MutationObserver(function(mutationsList, observer) {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    console.log("mudou 2")
+                    mutation.addedNodes.forEach(function(node) {
+                        console.log("dentro do for each")
+                        console.log(node)
+                        addReplyIconToMessage(node);
+                    });
+                }
+            }
+        });
+ 
+        // Start observing changes in the chatroom messages container
+        observer.observe(document.querySelector(".chatroom__messages"), { childList: true });
+    }
+ 
+    function checkAndSetup() {
+        const chatMessages = document.querySelector(chatMessagesClassName)
+ 
+        if (chatMessages) {
+            console.log("chatMessages found")
+            setupReplyFeatures(chatMessages);
+        } else {
+            console.error('chatMessages not found: Ensure the chatbox ID is correct.');
+            setTimeout(checkAndSetup, 100); // Check again in 100ms
+        }
+    }
+ 
+    checkAndSetup(); // Start the setup process 
+})();
+    
     const chatboxID = '#chatbox__messages-create';
     const EMOJI_TRIGGER_HTML = `<div style="cursor: pointer; font-size: 24px;">😊</div>`;
     const EMOJI_PANEL_HTML = `<div style="position: absolute; display: flex; background: transparent; border: none;
