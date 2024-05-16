@@ -306,4 +306,3 @@
         childList: true,
         subtree: true
     });
-})();
