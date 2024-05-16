@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Extras UNIT3D CBR
 // @namespace    https://github.com/harpiacbr/Extras-CBR
-// @version      1.5
+// @version      1.6
 // @description  Modificações externas para o tracker capybarabr
 // @match        https://capybarabr.com/*
 // @match        https://*/torrents?view=list*
@@ -18,7 +18,7 @@
         const newMessageTextArea = document.querySelector("#chatbox__messages-create");
  
         function quoteMessage(username, message) {
-            newMessageTextArea.value = `[color=#999999]Respondendo: [b]${username}[/b] - [i]${message}[/i][/color]\n`;
+            newMessageTextArea.value = `[color=#999999][b]${username}[/b]: [i]"${message}"[/i][/color]\n`;
         }
  
         // Function to add reply icon to a message
@@ -28,7 +28,7 @@
             const header = message.querySelector(".chatbox-message__header");
  
             const replyIcon = document.createElement("i");
-            replyIcon.classList.add("fa", "solid", "fa-reply");
+            replyIcon.classList.add("fa", "solid", "fa-reply", "reply-icon");
  
             replyIcon.addEventListener("click", () => quoteMessage(username, content));
  
@@ -40,16 +40,8 @@
  
         // MutationObserver to monitor changes in the chatroom messages container
         const observer = new MutationObserver(function(mutationsList, observer) {
-            for (let mutation of mutationsList) {
-                if (mutation.type === 'childList') {
-                    console.log("mudou 2")
-                    mutation.addedNodes.forEach(function(node) {
-                        console.log("dentro do for each")
-                        console.log(node)
-                        addReplyIconToMessage(node);
-                    });
-                }
-            }
+            document.querySelectorAll(".reply-icon").forEach((icon) => icon.remove());
+            document.querySelectorAll(".chatbox-message").forEach(addReplyIconToMessage);
         });
  
         // Start observing changes in the chatroom messages container
